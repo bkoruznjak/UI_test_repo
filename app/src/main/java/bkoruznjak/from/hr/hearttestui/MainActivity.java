@@ -13,10 +13,20 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AbsListView;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 
+import com.github.ksoichiro.android.observablescrollview.ObservableListView;
+import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCallbacks;
+import com.github.ksoichiro.android.observablescrollview.ScrollState;
+import com.github.ksoichiro.android.observablescrollview.ScrollUtils;
+import com.nineoldandroids.view.ViewHelper;
+
+import java.util.ArrayList;
+
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, DrawerLayout.DrawerListener {
+        implements NavigationView.OnNavigationItemSelectedListener, DrawerLayout.DrawerListener, ObservableScrollViewCallbacks {
 
     ImageView androidImageView;
     View navigationHeaderView;
@@ -26,12 +36,24 @@ public class MainActivity extends AppCompatActivity
     float navigationViewWidth;
     float screenWidth;
     float halfScreenWidth;
+    ObservableListView observableListView;
+    Toolbar toolbar;
+    private int mParallaxImageHeight;
+    private View mImageView;
+    private View mListBackgroundView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+
+        mParallaxImageHeight = getResources().getDimensionPixelSize(R.dimen.parallax_image_height);
+        mImageView = findViewById(R.id.tfImageTwo);
+        mListBackgroundView = findViewById(R.id.list_background);
+
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setBackgroundColor(ScrollUtils.getColorWithAlpha(0, getResources().getColor(R.color.colorPrimary)));
         setSupportActionBar(toolbar);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -51,9 +73,19 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-
         navigationHeaderView = navigationView.getHeaderView(0);
-        androidImageView = (ImageView) navigationHeaderView.findViewById(R.id.androidTestIcon);
+        androidImageView = (ImageView) navigationHeaderView.findViewById(R.id.tfImageOne);
+
+        observableListView = (ObservableListView) findViewById(R.id.observableListView);
+        observableListView.setScrollViewCallbacks(this);
+        View paddingView = new View(this);
+        AbsListView.LayoutParams lp = new AbsListView.LayoutParams(AbsListView.LayoutParams.MATCH_PARENT,
+                mParallaxImageHeight);
+        paddingView.setLayoutParams(lp);
+        paddingView.setClickable(true);
+        observableListView.addHeaderView(paddingView);
+
+        populateListView();
     }
 
     @Override
@@ -139,5 +171,42 @@ public class MainActivity extends AppCompatActivity
             androidImageView.setX(halfScreenWidth);
             initialRun = false;
         }
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        onScrollChanged(observableListView.getCurrentScrollY(), false, false);
+    }
+
+    private void populateListView() {
+        // Add these codes after ListView initialization
+        ArrayList<String> items = new ArrayList<String>();
+        for (int i = 1; i <= 100; i++) {
+            items.add("Item " + i);
+        }
+        observableListView.setAdapter(new ArrayAdapter<String>(
+                this, android.R.layout.simple_list_item_1, items));
+    }
+
+    @Override
+    public void onScrollChanged(int scrollY, boolean firstScroll, boolean dragging) {
+        int baseColor = getResources().getColor(R.color.colorPrimary);
+        float alpha = Math.min(1, (float) scrollY / mParallaxImageHeight);
+        toolbar.setBackgroundColor(ScrollUtils.getColorWithAlpha(alpha, baseColor));
+        ViewHelper.setTranslationY(mImageView, -scrollY / 2);
+
+        // Translate list background
+        ViewHelper.setTranslationY(mListBackgroundView, Math.max(0, -scrollY + mParallaxImageHeight));
+    }
+
+    @Override
+    public void onDownMotionEvent() {
+
+    }
+
+    @Override
+    public void onUpOrCancelMotionEvent(ScrollState scrollState) {
+
     }
 }

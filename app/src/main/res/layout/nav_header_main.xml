@@ -8,17 +8,17 @@
     android:theme="@style/ThemeOverlay.AppCompat.Dark">
 
     <ImageView
-        android:id="@+id/androidTestIcon"
+        android:id="@+id/tfImageOne"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:paddingTop="@dimen/nav_header_vertical_spacing"
-        android:src="@drawable/random_image" />
+        android:src="@drawable/tf_image_one" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingBottom="@dimen/nav_header_vertical_spacing"
         android:layout_gravity="bottom"
+        android:paddingBottom="@dimen/nav_header_vertical_spacing"
         android:text="A Quick Brown Fox"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
