@@ -33,4 +33,43 @@
         android:id="@+id/observableListView"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
+
+    <com.wunderlist.slidinglayer.SlidingLayer xmlns:slidingLayer="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/slidingLayer1"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:elevation="2dip"
+        slidingLayer:changeStateOnTap="true"
+        slidingLayer:offsetDistance="10dp"
+        slidingLayer:previewOffsetDistance="20dp"
+        slidingLayer:stickTo="bottom">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/colorAccent">
+
+            <TextView
+                android:id="@+id/swipeText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:drawablePadding="15dip"
+                android:gravity="center"
+                android:paddingBottom="80dp"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="17sp" />
+
+            <Button
+                android:id="@+id/buttonClose"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="60dp"
+                android:onClick="buttonClicked"
+                android:text="POKEMOOOOOOOOOOOOOOOOON !!!!!" />
+
+        </RelativeLayout>
+    </com.wunderlist.slidinglayer.SlidingLayer>
 </FrameLayout>
