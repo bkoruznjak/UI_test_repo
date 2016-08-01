@@ -4,12 +4,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,11 +22,12 @@ import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCal
 import com.github.ksoichiro.android.observablescrollview.ScrollState;
 import com.github.ksoichiro.android.observablescrollview.ScrollUtils;
 import com.nineoldandroids.view.ViewHelper;
+import com.wunderlist.slidinglayer.SlidingLayer;
 
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, DrawerLayout.DrawerListener, ObservableScrollViewCallbacks {
+        implements NavigationView.OnNavigationItemSelectedListener, DrawerLayout.DrawerListener, ObservableScrollViewCallbacks, SlidingLayer.OnScrollListener {
 
     ImageView androidImageView;
     View navigationHeaderView;
@@ -38,10 +39,11 @@ public class MainActivity extends AppCompatActivity
     float halfScreenWidth;
     ObservableListView observableListView;
     Toolbar toolbar;
+    FloatingActionButton fab;
     private int mParallaxImageHeight;
     private View mImageView;
     private View mListBackgroundView;
-
+    private SlidingLayer bottomSlider;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,12 +58,17 @@ public class MainActivity extends AppCompatActivity
         toolbar.setBackgroundColor(ScrollUtils.getColorWithAlpha(0, getResources().getColor(R.color.colorPrimary)));
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+//                        .setAction("Action", null).show();
+                if (bottomSlider.isClosed()) {
+                    bottomSlider.openLayer(true);
+                } else {
+                    bottomSlider.closeLayer(true);
+                }
             }
         });
 
@@ -86,6 +93,9 @@ public class MainActivity extends AppCompatActivity
         observableListView.addHeaderView(paddingView);
 
         populateListView();
+
+        bottomSlider = (SlidingLayer) findViewById(R.id.slidingLayer1);
+        bottomSlider.setOnScrollListener(this);
     }
 
     @Override
@@ -208,5 +218,11 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onUpOrCancelMotionEvent(ScrollState scrollState) {
 
+    }
+
+    @Override
+    public void onScroll(int absoluteScroll) {
+        Log.d("BBB", "SCROLLING :" + absoluteScroll);
+        fab.setTranslationY(-absoluteScroll);
     }
 }

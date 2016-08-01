@@ -22,7 +22,6 @@
         android:layout_height="@dimen/flexible_space_image_height"
         android:src="@drawable/tf_image_two" />
 
-
     <View
         android:id="@+id/list_background"
         android:layout_width="match_parent"
@@ -67,7 +66,6 @@
                 android:layout_alignParentBottom="true"
                 android:layout_centerHorizontal="true"
                 android:layout_marginBottom="60dp"
-                android:onClick="buttonClicked"
                 android:text="POKEMOOOOOOOOOOOOOOOOON !!!!!" />
 
         </RelativeLayout>
