@@ -27,7 +27,7 @@ import com.wunderlist.slidinglayer.SlidingLayer;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, DrawerLayout.DrawerListener, ObservableScrollViewCallbacks, SlidingLayer.OnScrollListener {
+        implements NavigationView.OnNavigationItemSelectedListener, DrawerLayout.DrawerListener, ObservableScrollViewCallbacks, SlidingLayer.OnScrollListener, SlidingLayer.OnInteractListener {
 
     ImageView androidImageView;
     View navigationHeaderView;
@@ -44,6 +44,8 @@ public class MainActivity extends AppCompatActivity
     private View mImageView;
     private View mListBackgroundView;
     private SlidingLayer bottomSlider;
+    private float densityMargin16;
+    private float fabRadius;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,10 +66,9 @@ public class MainActivity extends AppCompatActivity
             public void onClick(View view) {
 //                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
 //                        .setAction("Action", null).show();
-                if (bottomSlider.isClosed()) {
+                if (bottomSlider.isClosed() || bottomSlider.isInPreviewMode()) {
                     bottomSlider.openLayer(true);
-                } else {
-                    bottomSlider.closeLayer(true);
+                    fab.hide();
                 }
             }
         });
@@ -96,6 +97,9 @@ public class MainActivity extends AppCompatActivity
 
         bottomSlider = (SlidingLayer) findViewById(R.id.slidingLayer1);
         bottomSlider.setOnScrollListener(this);
+        bottomSlider.setOnInteractListener(this);
+        densityMargin16 = getResources().getDisplayMetrics().density * 16f;
+        fabRadius = (fab.getHeight() / 2) / getResources().getDisplayMetrics().density;
     }
 
     @Override
@@ -222,7 +226,41 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onScroll(int absoluteScroll) {
-        Log.d("BBB", "SCROLLING :" + absoluteScroll);
-        fab.setTranslationY(-absoluteScroll);
+        //Log.d("BBB", "scroller y:" + absoluteScroll);
+        //fab.setTranslationY(absoluteScroll - densityMargin16);
+    }
+
+    @Override
+    public void onOpen() {
+        Log.d("bbb", "on Open");
+        fab.hide();
+    }
+
+    @Override
+    public void onShowPreview() {
+        Log.d("bbb", "on show preview");
+        fab.show();
+    }
+
+    @Override
+    public void onClose() {
+        Log.d("bbb", "on close");
+        fab.show();
+    }
+
+    @Override
+    public void onOpened() {
+        Log.d("bbb", "on Opened");
+    }
+
+    @Override
+    public void onPreviewShowed() {
+        Log.d("bbb", "on on preview showed");
+
+    }
+
+    @Override
+    public void onClosed() {
+        Log.d("bbb", "on closed");
     }
 }

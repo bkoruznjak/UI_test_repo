@@ -40,7 +40,7 @@
         android:elevation="2dip"
         slidingLayer:changeStateOnTap="true"
         slidingLayer:offsetDistance="10dp"
-        slidingLayer:previewOffsetDistance="20dp"
+        slidingLayer:previewOffsetDistance="12dp"
         slidingLayer:stickTo="bottom">
 
         <RelativeLayout
